@@ -7,7 +7,7 @@ class Grid {
     val odds = 0.3
     private var _currentPill = new Pill(Seq(new PillPiece(3, 0, ColorOption.randomColor),
         new PillPiece(4, 0, ColorOption.randomColor)))
-    private var _elememts: Seq[Element] = (for(i <- 0 until 8; j <- 6 until 16; if math.random < odds) yields {
+    private var _elememts: Seq[Element] = (for(i <- 0 until 8; j <- 6 until 16; if math.random < odds) yield {
         new Virus(i, j, ColorOption.randomColor)
     })
 
@@ -24,6 +24,8 @@ class Grid {
             _currentPill = currentPill.move(0, 1, (x, y) => y < 16)
             fallDelay = 0.0
         }
+        if (leftHeld) _currentPill = currentPill.move(-1, 0, (x,y) => y < 16)
+        if (rightHeld) _currentPill = currentPill.move(1, 0, (x,y) => y < 16)
     }
     def leftPressed(): Unit = leftHeld = true
     def rightPressed(): Unit = rightHeld = true

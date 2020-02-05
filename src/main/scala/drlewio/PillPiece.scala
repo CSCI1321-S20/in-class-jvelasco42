@@ -7,6 +7,6 @@ class PillPiece(val x: Int, val y: Int, val color: ColorOption.Value) extends Gr
         new PillPiece(x + dx, y + dy, color)
     }
     def moveAllowed(dx: Int, dy: Int, isClear: (Int, Int) => Boolean): Boolean = {
-        
+        isClear(x + dx, y + dy)
     }
 }

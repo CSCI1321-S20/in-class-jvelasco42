@@ -1,5 +1,6 @@
 package drlewio
 
+import scalafx.Includes._
 import scalafx.application.JFXApp
 import scalafx.scene.Scene
 import scalafx.scene.canvas.Canvas
@@ -15,11 +16,6 @@ object DrLewio extends JFXApp {
     val gc = canvas.graphicsContext2D
     val renderer = new Renderer(gc)
 
-    def draw(gc: GraphicsContext): Unit = {
-        gc.fill = Color.Black
-        gc.fillRect(0, 0, 800, 800)
-        renderer.render(grid)
-    }
     stage = new JFXApp.PrimaryStage {
         title = "Dr. Lewio"
         scene = new Scene(800,800) {
@@ -41,10 +37,12 @@ object DrLewio extends JFXApp {
                 }
             }
 
-            val lastTime = -1L
+            var lastTime = -1L
             val timer = AnimationTimer(time => {
                 if(lastTime >= 0) {
-                    val delay = time - lastTime / le9
+                    val delay = (time - lastTime) / 1e9
+                    grid.update(delay)
+                    renderer.render(grid)
                 }
                 lastTime = time
             })
