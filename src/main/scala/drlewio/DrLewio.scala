@@ -25,6 +25,8 @@ object DrLewio extends JFXApp {
                 ke.code match {
                     case KeyCode.Left => grid.leftPressed()
                     case KeyCode.Right => grid.rightPressed()
+                    case KeyCode.Up => grid.upPressed()
+                    case KeyCode.Down => grid.downPressed()
                     case _ => 
                 }
             }
@@ -33,6 +35,8 @@ object DrLewio extends JFXApp {
                 ke.code match {
                     case KeyCode.Left => grid.leftReleased()
                     case KeyCode.Right => grid.rightReleased()
+                    case KeyCode.Up => grid.upReleased()
+                    case KeyCode.Down => grid.downReleased()
                     case _ => 
                 }
             }

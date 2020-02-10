@@ -13,22 +13,41 @@ class Grid {
 
     private var leftHeld = false
     private var rightHeld = false
+    private var upHeld = false
+    private var downHeld = false
     private var fallDelay = 0.0
     val fallInterval = 1.0
+    private var moveDelay = 0.0
+    val moveInterval = 0.1
 
     def currentPill = _currentPill
     def elements: Seq[Element] = currentPill +: _elememts
     def update(delay: Double): Unit = {
         fallDelay += delay
+        moveDelay += delay
         if(fallDelay >= fallInterval) {
             _currentPill = currentPill.move(0, 1, (x, y) => y < 16)
             fallDelay = 0.0
         }
-        if (leftHeld) _currentPill = currentPill.move(-1, 0, (x,y) => y < 16)
-        if (rightHeld) _currentPill = currentPill.move(1, 0, (x,y) => y < 16)
+        if(moveDelay >= moveInterval) {
+            if(leftHeld) _currentPill = currentPill.move(-1, 0, isClear)
+            if(rightHeld) _currentPill = currentPill.move(1, 0, isClear)
+            if(upHeld) _currentPill = currentPill.move(0, -1, isClear)
+            if(downHeld) _currentPill = currentPill.move(0, 1, isClear)
+        }
     }
+
+    def isClear(x: Int, y: Int): Boolean = {
+        y < 16 && x >= 0 && x < 8
+    }
+
     def leftPressed(): Unit = leftHeld = true
-    def rightPressed(): Unit = rightHeld = true
     def leftReleased(): Unit = leftHeld = false
+    def rightPressed(): Unit = rightHeld = true
     def rightReleased(): Unit = rightHeld = false
+
+    def upPressed(): Unit = upHeld = true
+    def upReleased(): Unit = upHeld = false
+    def downPressed(): Unit = downHeld = true
+    def downReleased(): Unit = downHeld = false
 }
