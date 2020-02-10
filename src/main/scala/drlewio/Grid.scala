@@ -30,10 +30,11 @@ class Grid {
             fallDelay = 0.0
         }
         if(moveDelay >= moveInterval) {
+            if(upHeld) _currentPill = currentPill.rotate(isClear)
+            if(downHeld) _currentPill = currentPill.move(0, 1, isClear)
             if(leftHeld) _currentPill = currentPill.move(-1, 0, isClear)
             if(rightHeld) _currentPill = currentPill.move(1, 0, isClear)
-            if(upHeld) _currentPill = currentPill.move(0, -1, isClear)
-            if(downHeld) _currentPill = currentPill.move(0, 1, isClear)
+            moveDelay = 0.0
         }
     }
 
@@ -41,13 +42,15 @@ class Grid {
         y < 16 && x >= 0 && x < 8
     }
 
-    def leftPressed(): Unit = leftHeld = true
-    def leftReleased(): Unit = leftHeld = false
-    def rightPressed(): Unit = rightHeld = true
-    def rightReleased(): Unit = rightHeld = false
-
     def upPressed(): Unit = upHeld = true
     def upReleased(): Unit = upHeld = false
+
     def downPressed(): Unit = downHeld = true
     def downReleased(): Unit = downHeld = false
+    
+    def leftPressed(): Unit = leftHeld = true
+    def leftReleased(): Unit = leftHeld = false
+
+    def rightPressed(): Unit = rightHeld = true
+    def rightReleased(): Unit = rightHeld = false
 }
