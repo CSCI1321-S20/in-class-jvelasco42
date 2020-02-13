@@ -2,19 +2,19 @@ package drlewio
 
 import scalafx.scene.canvas.GraphicsContext
 import scalafx.scene.paint.Color
+import scalafx.scene.input.KeyCode
 
 class Grid {
     val odds = 0.3
     private var _currentPill = new Pill(Seq(new PillPiece(3, 0, ColorOption.randomColor),
         new PillPiece(4, 0, ColorOption.randomColor)))
+    private var _nextPill = new Pill(Seq(new PillPiece(3, 0, ColorOption.randomColor),
+        new PillPiece(4, 0, ColorOption.randomColor)))
     private var _elememts: Seq[Element] = (for(i <- 0 until 8; j <- 6 until 16; if math.random < odds) yield {
         new Virus(i, j, ColorOption.randomColor)
     })
 
-    private var leftHeld = false
-    private var rightHeld = false
-    private var upHeld = false
-    private var downHeld = false
+    private var keysHeld = Set[KeyCode]()
     private var fallDelay = 0.0
     val fallInterval = 1.0
     private var moveDelay = 0.0
@@ -26,31 +26,31 @@ class Grid {
         fallDelay += delay
         moveDelay += delay
         if(fallDelay >= fallInterval) {
-            _currentPill = currentPill.move(0, 1, (x, y) => y < 16)
+            val movedPill = currentPill.move(0, 1, isClear)
+            if(movedPill == _currentPill){
+                _elememts +:= _currentPill
+                _currentPill = _nextPill
+                _nextPill = new Pill(Seq(new PillPiece(3, 0, ColorOption.randomColor),
+                     new PillPiece(4, 0, ColorOption.randomColor)))
+            } else {
+                _currentPill = movedPill
+            }
             fallDelay = 0.0
         }
         if(moveDelay >= moveInterval) {
-            if(upHeld) _currentPill = currentPill.rotate(isClear)
-            if(downHeld) _currentPill = currentPill.move(0, 1, isClear)
-            if(leftHeld) _currentPill = currentPill.move(-1, 0, isClear)
-            if(rightHeld) _currentPill = currentPill.move(1, 0, isClear)
+            if(keysHeld(KeyCode.Up)) _currentPill = currentPill.rotate(isClear)
+            if(keysHeld(KeyCode.Down)) _currentPill = currentPill.move(0, 1, isClear)
+            if(keysHeld(KeyCode.Left)) _currentPill = currentPill.move(-1, 0, isClear)
+            if(keysHeld(KeyCode.Right)) _currentPill = currentPill.move(1, 0, isClear)
             moveDelay = 0.0
         }
     }
 
     def isClear(x: Int, y: Int): Boolean = {
-        y < 16 && x >= 0 && x < 8
+        y < 16 && x >= 0 && x < 8 && 
+            !_elememts.exists(e => e.cells.exists(c => c.x == x && c.y == y))
     }
 
-    def upPressed(): Unit = upHeld = true
-    def upReleased(): Unit = upHeld = false
-
-    def downPressed(): Unit = downHeld = true
-    def downReleased(): Unit = downHeld = false
-    
-    def leftPressed(): Unit = leftHeld = true
-    def leftReleased(): Unit = leftHeld = false
-
-    def rightPressed(): Unit = rightHeld = true
-    def rightReleased(): Unit = rightHeld = false
+    def keyPressed(keyCode: KeyCode): Unit = keysHeld += keyCode
+    def keyReleased(keyCode: KeyCode): Unit = keysHeld -= keyCode
 }
