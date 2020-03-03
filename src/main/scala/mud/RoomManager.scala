@@ -6,6 +6,7 @@ import akka.actor.Props
 
 class RoomManager extends Actor {
   val rooms = readRooms()
+  for(child <- context.children) child ! Room.LinkRooms
 
   def readRooms(): Map[String, ActorRef] = {
     val xmlData = xml.XML.loadFile("world.xml")
