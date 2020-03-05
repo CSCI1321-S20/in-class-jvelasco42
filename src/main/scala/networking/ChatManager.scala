@@ -13,6 +13,8 @@ class ChatManager extends Actor {
       context.actorOf(Props(new User(name, sock, in, out)), name)
     case CheckAllInputs =>
       for(child <- context.children) child ! User.CheckInput
+    case SendToAll(msg) =>
+      for(child <- context.children) child ! 
     case m => println("Unhandled message in User: " + m)
   }
 }
