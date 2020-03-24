@@ -14,7 +14,7 @@ class ChatManager extends Actor {
     case CheckAllInputs =>
       for(child <- context.children) child ! User.CheckInput
     case SendToAll(msg) =>
-      for(child <- context.children) child ! 
+      for(child <- context.children) child ! User.PrintMessage(msg)
     case m => println("Unhandled message in User: " + m)
   }
 }
@@ -22,4 +22,5 @@ class ChatManager extends Actor {
 object ChatManager {
   case class NewUser(name: String, sock: Socket, in: BufferedReader, out: PrintStream)
   case object CheckAllInputs
+  case class SendToAll(msg: String)
 }

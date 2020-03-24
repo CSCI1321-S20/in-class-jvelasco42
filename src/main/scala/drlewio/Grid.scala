@@ -71,7 +71,7 @@ class Grid {
 
   def buildPassable: PassableGrid = {
     val cells = for(elem <- elements; cells <- elem.cells) yield {
-      cell.buildPassable
+      cells.buildPassable
     }
     PassableGrid(cells)
   }

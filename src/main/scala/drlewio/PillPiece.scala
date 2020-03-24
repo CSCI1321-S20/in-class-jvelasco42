@@ -10,5 +10,5 @@ class PillPiece(val x: Int, val y: Int, val color: ColorOption.Value) extends Gr
     isClear(x + dx, y + dy)
   }
 
-  def buildPassable: PassableCell(x, y, color, 0)
+  def buildPassable = PassableCell(x, y, color, 0)
 }

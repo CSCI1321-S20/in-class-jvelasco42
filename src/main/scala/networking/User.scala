@@ -11,6 +11,7 @@ class User(name: String, sock: Socket, in: BufferedReader, out: PrintStream) ext
     case CheckInput =>
       if(in.ready) {
         val input = in.readLine()
+        sender ! ChatManager.SendToAll(name + ": " + input)
       }
     case m => println("Unhandled message in User: " + m)
   }
@@ -18,4 +19,5 @@ class User(name: String, sock: Socket, in: BufferedReader, out: PrintStream) ext
 
 object User {
   case object CheckInput
+  case class PrintMessage(msg: String)  
 }

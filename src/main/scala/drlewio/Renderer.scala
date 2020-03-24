@@ -11,18 +11,18 @@ class Renderer(gc: GraphicsContext) {
     gc.fill = Color.DarkGrey
     gc.fillRect(40, 40, 8 * cellSize, 16 * cellSize)
     for (elem <- grid.cells) {
-      val color = cell.color match {
+      val color = cells.color match {
         case ColorOption.Red    => Color.Red
         case ColorOption.Blue   => Color.Blue
         case ColorOption.Yellow => Color.Yellow
       }
       gc.fill = color
-      cell.style match {
+      cells.style match {
         case 0 =>
-          gc.fillRect(40 + cell.x * cellSize, 40 + cell.y * cellSize, cellSize, cellSize
+          gc.fillRect(40 + cells.x * cellSize, 40 + cells.y * cellSize, cellSize, cellSize
           )
         case 1 =>
-          gc.fillOval(40 + cell.x * cellSize, 40 + cell.y * cellSize, cellSize, cellSize
+          gc.fillOval(40 + cells.x * cellSize, 40 + cells.y * cellSize, cellSize, cellSize
           )
       }
     }
