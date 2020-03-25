@@ -10,19 +10,19 @@ class Renderer(gc: GraphicsContext) {
     gc.fillRect(0, 0, 800, 800)
     gc.fill = Color.DarkGrey
     gc.fillRect(40, 40, 8 * cellSize, 16 * cellSize)
-    for (elem <- grid.cells) {
-      val color = cells.color match {
+    for (cell <- grid.cells) {
+      val color = cell.color match {
         case ColorOption.Red    => Color.Red
         case ColorOption.Blue   => Color.Blue
         case ColorOption.Yellow => Color.Yellow
       }
       gc.fill = color
-      cells.style match {
+      cell.style match {
         case 0 =>
-          gc.fillRect(40 + cells.x * cellSize, 40 + cells.y * cellSize, cellSize, cellSize
+          gc.fillRect(40 + cell.x * cellSize, 40 + cell.y * cellSize, cellSize, cellSize
           )
         case 1 =>
-          gc.fillOval(40 + cells.x * cellSize, 40 + cells.y * cellSize, cellSize, cellSize
+          gc.fillOval(40 + cell.x * cellSize, 40 + cell.y * cellSize, cellSize, cellSize
           )
       }
     }

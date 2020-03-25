@@ -11,31 +11,32 @@ import java.util.concurrent.LinkedBlockingQueue
 
 case class PlayerConnection(grid: Grid, sock: Socket, in: ObjectInputStream, out: ObjectOutputStream)
 
-object Server extends App{
+object Server extends App {
   val connections = mutable.Buffer[PlayerConnection]()
   val queue = new LinkedBlockingQueue[PlayerConnection]()
 
   val ss = new ServerSocket(8000)
-  Future{
+  Future {
     while(true) {
       val sock = ss.accept()
       val ois = new ObjectInputStream(sock.getInputStream())
       val oos = new ObjectOutputStream(sock.getOutputStream())
-      connections += PlayerConnection(new Grid, sock, ois, oos)
+      queue.put(PlayerConnection(new Grid, sock, ois, oos))
     }
   }
 
   var lastTime = -1L
   while(true) {
-    while(!queue.isEmpty()) {
+    while (!queue.isEmpty()) {
       connections += queue.take()
     }
     val time = System.nanoTime()
-    if(lastTime >= 0) {
-      val delay = (time - lastTime) / 1e9
-      for(pc <- connections) {
+    if (lastTime >= 0) {
+      val delay = (time - lastTime)/1e9
+      for (pc <- connections) {
         pc.grid.update(delay)
         val pg = pc.grid.buildPassable
+        pc.out.writeObject(pg)
       }
     }
     lastTime = time

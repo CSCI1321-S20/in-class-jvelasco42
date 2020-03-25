@@ -2,33 +2,47 @@ package drlewio
 
 import scalafx.Includes._
 import scalafx.application.JFXApp
-import scalafx.scene.Scene
 import scalafx.scene.canvas.Canvas
-import scalafx.scene.canvas.GraphicsContext
+import scalafx.scene.Scene
 import scalafx.scene.input.KeyEvent
-import scalafx.scene.input.KeyCode
 import java.net.Socket
-import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.io.ObjectInputStream
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
-object Client {
-  val canvas = new Canvas(800,800)
+object Client extends JFXApp {
+  val canvas = new Canvas(800, 800)
   val gc = canvas.graphicsContext2D
   val renderer = new Renderer(gc)
 
   val sock = new Socket("localhost", 8000)
-  val ois = new ObjectInputStream(sock.getInputStream())
   val oos = new ObjectOutputStream(sock.getOutputStream())
+  val ois = new ObjectInputStream(sock.getInputStream())
+
+  Future {
+    while(true) {
+      val pg = ois.readObject() match {
+        case g: PassableGrid => g
+      }
+      renderer.render(pg)
+    }
+  }
 
   stage = new JFXApp.PrimaryStage {
     title = "Dr. Lewio"
-    scene = new Scene(800,800) {
+    scene = new Scene(800, 800) {
       content = canvas
-            
-      onKeyPressed = (ke: KeyEvent) => oos.writeObject(ke.code) // Send to server. grid.keyPressed(ke.code)
-      onKeyReleased = (ke: KeyEvent) => oos.writeObject(ke.code) // Send to server. grid.keyReleased(ke.code)
+
+      onKeyPressed = (ke: KeyEvent) => {
+        oos.writeInt(KeyData.KeyPressed)
+        oos.writeInt(KeyData.codeToInt(ke.code))
+      }
+      onKeyReleased = (ke: KeyEvent) => {
+        oos.writeInt(KeyData.KeyReleased)
+        oos.writeInt(KeyData.codeToInt(ke.code))
+      }
     }
   }
-      //renderer.render(pg)
 
 }

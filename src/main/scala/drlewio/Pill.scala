@@ -3,6 +3,8 @@ package drlewio
 class Pill(val pieces: Seq[PillPiece]) extends Element {
     def cells: Seq[GridCell] = pieces
 
+    def selfSupported: Boolean = false
+
     def move(dx: Int, dy: Int, isClear: (Int, Int) => Boolean): Pill = {
         if(pieces.forall(_.moveAllowed(dx, dy, isClear))) {
             new Pill(pieces.map(_.move(dx, dy)))
@@ -21,5 +23,10 @@ class Pill(val pieces: Seq[PillPiece]) extends Element {
             }
             if(newPill.pieces.forall(pp => isClear(pp.x, pp.y))) newPill else this
         }
+    }
+
+    def removeAll(victims: Set[GridCell]): Option[Element] = {
+        val newPieces = pieces.filterNot(victims)
+        if (newPieces.isEmpty) None else Some(new Pill(newPieces))
     }
 }
