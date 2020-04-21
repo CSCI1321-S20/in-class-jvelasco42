@@ -1,6 +1,5 @@
 package adt
 
-
 trait Queue[A] {
     def enqueue(a: A): Unit
     def dequeue(): A
