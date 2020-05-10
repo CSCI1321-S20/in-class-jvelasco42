@@ -1,4 +1,4 @@
-  package drlewio
+package drlewio
 
 import scalafx.scene.input.KeyCode
 
